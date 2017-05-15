@@ -57,6 +57,10 @@ articleList = []
 articleNum = 0
 
 
+# 크롤링 못하는 사이트들
+except_sites = ['newsway', 'headlinejeju']
+
+
 # 현재 검색 날짜
 currentDate = startDate
 while currentDate <= endDate:
@@ -90,7 +94,7 @@ while currentDate <= endDate:
                     continue
                 try:
                     url = link['href']
-                    if 'newsway' in url:
+                    if any(site in url for site in except_sites):
                         # 파싱 안되는 뉴스 사이트 ㅠㅠ
                         continue
 

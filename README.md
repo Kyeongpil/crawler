@@ -6,6 +6,7 @@
 	크롤링할 데이터의 저작권은 해당 사이트에 있으며,
 	
 	서버에 악영향을 주거나 저작권을 위반하지 않도록 합니다.
+
 	
 ## Dependency
 * Python 2.7, BeautifulSoup, ujson
