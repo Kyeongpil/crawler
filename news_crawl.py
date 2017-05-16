@@ -58,7 +58,7 @@ articleNum = 0
 
 
 # 크롤링 못하는 사이트들
-except_sites = ['newsway', 'headlinejeju']
+except_sites = ['newsway', 'headlinejeju', 'ksilbo']
 
 
 # 현재 검색 날짜
