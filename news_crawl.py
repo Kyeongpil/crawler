@@ -113,6 +113,7 @@ while currentDate <= endDate:
                     article_['text'] = re.sub(r"\n+", u"\n", article_text).strip()
 
                     article_['date'] = date
+                    article_['url'] = url
                     articleList.append(article_)
 
                     articleNum += 1
