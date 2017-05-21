@@ -23,7 +23,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("query", type=str, help="Query to crawl. You can multiple query using ','")
 parser.add_argument("start_date", type=str, help="Specify the date range(start), YYYY-MM-DD")
 parser.add_argument("end_date", type=str, help="Specify the date range(end), YYYY-MM-DD")
-parser.add_argument("--dir", type=str, default="./cralwed_articles", help="directory to save result")
+parser.add_argument("--dir", type=str, default="./crawled_articles", help="directory to save result")
 parser.add_argument("--news_range", type=str, default='all',
                     help="crawl news that... all: query in title or content, title: query in title")
 args = parser.parse_args()
