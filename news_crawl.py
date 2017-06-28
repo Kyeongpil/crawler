@@ -2,7 +2,10 @@
 
 from bs4 import BeautifulSoup
 from newspaper import Article
-import sys, requests, os, re
+import sys
+import requests
+import os
+import re
 from time import sleep
 from urllib import quote
 from dateutil.relativedelta import relativedelta
@@ -20,12 +23,28 @@ sys.tracebacklimit = 0
 
 # argument
 parser = argparse.ArgumentParser()
-parser.add_argument("query", type=str, help="Query to crawl. You can multiple query using ','")
-parser.add_argument("start_date", type=str, help="Specify the date range(start), YYYY-MM-DD")
-parser.add_argument("end_date", type=str, help="Specify the date range(end), YYYY-MM-DD")
-parser.add_argument("--dir", type=str, default="./crawled_articles", help="directory to save result")
-parser.add_argument("--news_range", type=str, default='all',
-                    help="crawl news that... all: query in title or content, title: query in title")
+parser.add_argument(
+    "query",
+    type=str,
+    help="Query to crawl. You can multiple query using ','")
+parser.add_argument(
+    "start_date",
+    type=str,
+    help="Specify the date range(start), YYYY-MM-DD")
+parser.add_argument(
+    "end_date",
+    type=str,
+    help="Specify the date range(end), YYYY-MM-DD")
+parser.add_argument(
+    "--dir",
+    type=str,
+    default="./crawled_articles",
+    help="directory to save result")
+parser.add_argument(
+    "--news_range",
+    type=str,
+    default='all',
+    help="crawl news that... all: query in title or content, title: query in title")
 args = parser.parse_args()
 
 
@@ -41,7 +60,8 @@ if not os.path.exists(args.dir):
 # 검색할 단어
 query = args.query
 if ',' in query:
-    query = "%20|%20".join([quote(q.encode('euc-kr') for q in query.split(","))])
+    query = "%20|%20".join([quote(q.encode('euc-kr')
+                                  for q in query.split(","))])
 else:
     query = quote(query.encode('euc-kr'))
 
@@ -51,7 +71,10 @@ startDate = [int(s) for s in args.start_date.split('-')]
 startDate = datetime(startDate[0], startDate[1], startDate[2])
 # 검색 끝 기간
 endDate = [int(s) for s in args.end_date.split('-')]
-endDate = datetime(endDate[0], endDate[1], min(endDate[2], monthrange(endDate[0], endDate[1])[1]))
+endDate = datetime(
+    endDate[0], endDate[1], min(
+        endDate[2], monthrange(
+            endDate[0], endDate[1])[1]))
 
 articleList = []
 articleNum = 0
@@ -72,15 +95,19 @@ while currentDate <= endDate:
 
     page = 1
     # 검색 쿼리 url
-    base_url = 'http://news.naver.com/main/search/search.nhn?query=%s&st=news.all&q_enc=EUC-KR&r_enc=UTF-8&r_format=xml&rp=none&sm=%s.basic&ic=all&so=rel.dsc&detail=1&pd=1&r_cluster2_start=1&r_cluster2_display=10&start=1&display=10&startDate=%s&endDate=%s&page=' % (query, args.news_range, date, date)
+    base_url = 'http://news.naver.com/main/search/search.nhn?query=%s&st=news.all&q_enc=EUC-KR&r_enc=UTF-8&r_format=xml&rp=none&sm=%s.basic&ic=all&so=rel.dsc&detail=1&pd=1&r_cluster2_start=1&r_cluster2_display=10&start=1&display=10&startDate=%s&endDate=%s&page=' % (
+        query, args.news_range, date, date)
     # 페이지 별로 검색
     while True:
         try:
-            res = requests.get(base_url+str(page))
+            res = requests.get(base_url + str(page))
             # parser
             bs = BeautifulSoup(res.text, 'lxml')
 
-            current_page = int(bs.find('div', {'class': 'paging'}).find('strong').text)
+            current_page = int(
+                bs.find(
+                    'div', {
+                        'class': 'paging'}).find('strong').text)
             # 끝 페이지 다다르면 종료
             if page > current_page:
                 break
@@ -99,7 +126,12 @@ while currentDate <= endDate:
                         continue
 
                     # 각 신문사 기사들을 읽어서 파싱
-                    article = Article(url, language='ko', memorize_articles=False, fetch_images=False, skip_bad_cleaner=True)
+                    article = Article(
+                        url,
+                        language='ko',
+                        memorize_articles=False,
+                        fetch_images=False,
+                        skip_bad_cleaner=True)
                     article.download()
                     article.parse()
 
@@ -109,19 +141,21 @@ while currentDate <= endDate:
 
                     # 기본적 preprocessing
                     article_text = article.text
-                    article_text = re.sub(r"[\[].*?[]]", " ", article.text)     # ex) [ㅇㅇㅇ 기자]
-                    article_['text'] = re.sub(r"\n+", u"\n", article_text).strip()
+                    article_text = re.sub(
+                        r"[\[].*?[]]", " ", article.text)     # ex) [ㅇㅇㅇ 기자]
+                    article_['text'] = re.sub(
+                        r"\n+", u"\n", article_text).strip()
 
                     article_['date'] = date
                     article_['url'] = url
                     articleList.append(article_)
 
                     articleNum += 1
-                except:
+                except BaseException:
                     # 예외: newspaper에서 파싱 못한 기사 => 제외!
                     print "Exception url: %s" % url
                     continue
-        except:
+        except BaseException:
             # 예외: 해당 날짜에 기사가 없는 경우나 기타 예외
             break
 
