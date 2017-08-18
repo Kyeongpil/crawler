@@ -1,6 +1,6 @@
 # Crawler
 * This crawlers are created by Kyeongpil Kang
-* Source site: Naver news, Naver movies, New York Times
+* Source site: Naver news, Naver movies, New York Times, 조선왕조실록(The record of Joseon dynasty)
 * 주의) 공부 및 연구 목적으로 작성한 크롤링 소스입니다.
 
 	크롤링할 데이터의 저작권은 해당 사이트에 있으며,
