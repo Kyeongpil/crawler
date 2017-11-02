@@ -14,6 +14,12 @@ import os
 if not os.path.exists('./data'):
     os.mkdir('./data')
 
+if not os.path.exists('./data/KOSDAQ'):
+    os.mkdir('./data/KOSDAQ')
+
+if not os.path.exists('./data/KOSPI'):
+    os.mkdir('./data/KOSPI')
+
 res = requests.get("http://bigdata-trader.com/itemcodehelp.jsp")
 bs = BeautifulSoup(res.text, 'lxml')
 rows = bs.find('table').findAll('tr')
@@ -58,7 +64,7 @@ for row in rows:
             break
         except:
             continue
-    with open(f'./data/{code_string}.csv', 'wb') as f:
+    with open(f'./data/{stock_type}/{code_string}.csv', 'wb') as f:
         res.raw.decode_content = True
         shutil.copyfileobj(res.raw, f)
 
