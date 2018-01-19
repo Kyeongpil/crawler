@@ -1,6 +1,7 @@
 # coding: utf-8
 
 from bs4 import BeautifulSoup
+from urllib.parse import quote_plus
 import requests
 import os
 import time
@@ -15,9 +16,9 @@ if not os.path.exists(main_dir):
 
 
 king_areas = main_page.find("div", {"id": "m_cont_list"}).findAll("li")
-
-for king_area in king_areas:
+for king_area in king_areas[9:]:
     area_text = king_area.text
+    print(area_text)
     area_dir = f'{main_dir}/{area_text}'
     if not os.path.exists(area_dir):
         os.mkdir(area_dir)
@@ -29,31 +30,24 @@ for king_area in king_areas:
             data={'id': area_id}).text, 'lxml')
 
     for year in area_page.find('ul', {'class':
-                                      'king_year2 clear2'}).findAll('li'):
-        for month in year.findAll('a')[1:]:
+                                      'king_year2 clear2'}).findAll('ul'):
+        for month in year.findAll('a'):
             month_text = month.text
 
-            id = month['href'].split("'")[1]
-            month_page = BeautifulSoup(
-                requests.get(
-                    f"http://sillok.history.go.kr/search/inspectionDayList.do?id={id}"
-                ).text, 'lxml')
-
+            id_ = month['href'].split("'")[1]
+            url = f"http://sillok.history.go.kr/search/inspectionDayList.do?id={id_}"
+            month_page = BeautifulSoup(requests.get(url).text, 'lxml')
             month_page = month_page.find("dl", {'class': 'ins_list_main'})
 
             book_section_text = month_page.find('dt').text.strip()
-            print(book_section_text)
-            book_section_dir = f"{area_dir}/{book_section_text}"
-            if not os.path.exists(book_section_dir):
-                os.mkdir(book_section_dir)
+            fwrite = open(f"{area_dir}/{book_section_text}.txt", 'w', encoding='utf-8')
 
-            for i, event in enumerate(month_page.findAll('a')):
+            for event in month_page.findAll('a'):
                 event_id = event['href'].split("'")[1]
-                event_page = BeautifulSoup(
-                    requests.get(f"http://sillok.history.go.kr/id/{event_id}")
-                    .text, 'lxml')
+                event_id = quote_plus(event_id)
+                event_url = f"http://sillok.history.go.kr/id/{event_id}"
+                event_page = BeautifulSoup(requests.get(event_url).text, 'lxml')
 
-                fwrite = open(f"{book_section_dir}/event_{i}.txt", 'w')
                 event_time = event_page.find(
                     'span', {'class': 'tit_loc'}).text.strip()
                 event_time = ' '.join(event_time.split())
@@ -78,13 +72,14 @@ for king_area in king_areas:
                     fwrite.write(' '.join(paragraph_korean.split()))
                     fwrite.write('\n')
 
-                fwrite.write('\n==========\n\n')
+                fwrite.write('\n-----\n\n')
 
                 for paragraph_chinese in event_chinese.findAll(
                         'p', {'class': 'paragraph'}):
                     fwrite.write(' '.join(paragraph_chinese.text.split()))
                     fwrite.write('\n')
 
-                fwrite.close()
+                fwrite.write('\n=====n\n')
 
+            fwrite.close()
             time.sleep(0.5)
