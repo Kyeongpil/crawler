@@ -16,7 +16,7 @@ if not os.path.exists(main_dir):
 
 
 king_areas = main_page.find("div", {"id": "m_cont_list"}).findAll("li")
-for king_area in king_areas[9:]:
+for king_area in king_areas:
     area_text = king_area.text
     print(area_text)
     area_dir = f'{main_dir}/{area_text}'
