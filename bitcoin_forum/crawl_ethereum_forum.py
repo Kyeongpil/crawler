@@ -7,7 +7,7 @@ url = "https://forum.ethereum.org/discussion/%d/"
 posts = []
 for i in range(30000):
     if i % 200 == 0:
-        print(i, len(posts))
+        print("i: %d, crawledNum: %d" % (i, len(posts)))
         
     res = requests.get(url % i)
     soup = BeautifulSoup(res.text, 'lxml')

@@ -77,7 +77,7 @@ while True:
     else:
         break
     
-    print(crawled_num)
+    print("crawled num: %d" % crawled_num)
 
 with open("ripple_forum.json", 'w') as f:
     json.dump(posts, f)
