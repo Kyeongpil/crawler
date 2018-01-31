@@ -125,9 +125,13 @@ def crawl(url_list, procId):
                     json.dump(posts, f)
 
                 posts = []
-                time.sleep(100)
+                time.sleep(120)
 
-    time.sleep(0.5)
+        time.sleep(1)
+
+    if len(posts) > 0:
+        with open(f"bitcoin/bitcoin_forum_{procId}_last.json", 'w') as f:
+            json.dump(posts, f)
 
 
 if __name__ == '__main__':
