@@ -15,10 +15,11 @@ url_template = "https://movie.naver.com/movie/bi/mi/%s.nhn?code=%d"
 
 
 movies = []
-for code in range(161242, 161243):
+for code in range(200000):
     if code % 1000 == 0:
         print(code)
     
+    sleep(0.3)
     movie = {}
     
     res = requests.get(url_template % ('basic', code))
@@ -26,10 +27,8 @@ for code in range(161242, 161243):
 
     try:
         name = bs.find('h3', {'class': 'h_movie'}).find('a').text.strip()
-        print(name)
     except:
-        # code error
-        print('code error')
+        # naver movie code error
         continue
 
     score = bs.find('a', {'id': 'actualPointPersentBasic'})
@@ -44,7 +43,6 @@ for code in range(161242, 161243):
     try:
         scenario = bs.find('p', {'class': 'con_tx'}).text.strip()
     except:
-        print("scenario doesn't exist!")
         continue
     
     movie['name'] = name
@@ -65,11 +63,9 @@ for code in range(161242, 161243):
 
         movie['actors'] = actors
     except:
-        print("actors don't exist!")
         continue
 
     movies.append(movie)
-    sleep(0.5)
 
 
 with open(f'{root_dir}/movies.json', 'w') as f:
