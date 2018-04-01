@@ -15,9 +15,10 @@ url_template = "https://movie.naver.com/movie/bi/mi/%s.nhn?code=%d"
 
 
 movies = []
+korean_movie_num = 0
 for code in range(200000):
     if code % 1000 == 0:
-        print(code)
+        print(code, len(movies), korean_movie_num)
     
     sleep(0.3)
     movie = {}
@@ -31,16 +32,20 @@ for code in range(200000):
         # naver movie code error
         continue
 
-    score = bs.find('a', {'id': 'actualPointPersentBasic'})
-    score = score.find('div', {'class':  'star_score'})
-    score.find('span').extract()
-    score = score.text.strip()
-    
-    info = bs.find('dl', {'class': 'info_spec'}).find('dd').findAll('span')
-    genres = [a.text.strip() for a in info[0].findAll('a')]
-    nation = info[1].find('a').text.strip()
-
     try:
+        score = bs.find('a', {'id': 'actualPointPersentBasic'})
+        score = score.find('div', {'class':  'star_score'})
+        score.find('span').extract()
+        score = score.text.strip()
+        if score == '':
+            continue
+        
+        info = bs.find('dl', {'class': 'info_spec'}).find('dd').findAll('span')
+        genres = [a.text.strip() for a in info[0].findAll('a')]
+        nation = info[1].find('a').text.strip()
+        if nation == '한국':
+            korean_movie_num += 1
+
         scenario = bs.find('p', {'class': 'con_tx'}).text.strip()
     except:
         continue
@@ -48,6 +53,7 @@ for code in range(200000):
     movie['name'] = name
     movie['code'] = int(code)
     movie['score'] = float(score)
+
     movie['genres'] = genres
     movie['nation'] = nation   
     movie['scenario'] = scenario
