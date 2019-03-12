@@ -47,6 +47,7 @@ for king_area in king_areas:
                 event_id = quote_plus(event_id)
                 event_url = f"http://sillok.history.go.kr/id/{event_id}"
                 event_page = BeautifulSoup(requests.get(event_url).text, 'lxml')
+                time.sleep(0.2)
 
                 event_time = event_page.find(
                     'span', {'class': 'tit_loc'}).text.strip()
@@ -79,7 +80,7 @@ for king_area in king_areas:
                     fwrite.write(' '.join(paragraph_chinese.text.split()))
                     fwrite.write('\n')
 
-                fwrite.write('\n=====n\n')
+                fwrite.write('\n=====\n\n')
 
             fwrite.close()
             time.sleep(0.5)
